@@ -5,6 +5,7 @@ import com.gymbuddy.workoutrunner.persistence.domain.WorkoutSession;
 import com.gymbuddy.workoutrunner.persistence.domain.enums.WorkoutSessionStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,6 +24,9 @@ import java.util.UUID;
 public interface SessionDtoMapper {
     @Mapping(target = "sessionId", expression = "java(UUID.randomUUID().toString())")
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
-    @Mapping(target = "status", expression = "java(WorkoutSessionStatus.SESSION_STARTED)")
+    @Mapping(target = "status", expression = "java(WorkoutSessionStatus.NOT_COMPLETED)")
     WorkoutSession toWorkoutSession(PostSessionDetailsDto details);
+
+    @Mapping(target = "completedAt", expression = "java(LocalDateTime.now())")
+    void finishSession(@MappingTarget WorkoutSession session, final WorkoutSessionStatus status);
 }

@@ -8,4 +8,6 @@ import com.gymbuddy.workoutrunner.model.SessionStartedResponse;
  */
 public interface SessionService {
     SessionStartedResponse startSession(PostSessionDetailsDto details);
+
+    void finishSession(String sessionId);
 }

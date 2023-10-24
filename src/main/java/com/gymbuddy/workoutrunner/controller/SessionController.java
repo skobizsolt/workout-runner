@@ -26,4 +26,13 @@ public class SessionController {
         final SessionStartedResponse sessionId = sessionService.startSession(details);
         return ResponseEntity.ok(sessionId);
     }
+
+    @PutMapping("/finish")
+    public ResponseEntity<Void> finishTraining(
+     @RequestHeader("Authorization") final String token,
+     @RequestParam final String sessionId) {
+        log.info("Rest endpoint::finishTraining invoked. Session: {}", sessionId);
+        sessionService.finishSession(sessionId);
+        return ResponseEntity.ok().build();
+    }
 }
