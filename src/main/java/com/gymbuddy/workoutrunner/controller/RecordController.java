@@ -1,7 +1,10 @@
 package com.gymbuddy.workoutrunner.controller;
 
 import com.gymbuddy.workoutrunner.dto.PostRecordDto;
+import com.gymbuddy.workoutrunner.mapper.RunnerModelMapper;
+import com.gymbuddy.workoutrunner.model.SessionActivityResponse;
 import com.gymbuddy.workoutrunner.model.StepRecordResponse;
+import com.gymbuddy.workoutrunner.persistence.query.dto.RecentSessionsDto;
 import com.gymbuddy.workoutrunner.service.RunnerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -22,13 +25,27 @@ import java.util.List;
 public class RecordController {
 
     private final RunnerService simulationService;
+    private final RunnerModelMapper runnerModelMapper;
+
+    @GetMapping("/activity")
+    public ResponseEntity<List<SessionActivityResponse>> getRecentActivity(
+            @RequestHeader("Authorization") final String token,
+            @RequestParam @NotNull @Valid final String userId) {
+        log.info("Rest endpoint::getRecentActivity invoked. " +
+                "userId: {}", userId);
+        List<RecentSessionsDto> recentSessions =
+                simulationService.getActivityForUser(userId);
+        List<SessionActivityResponse> response =
+                runnerModelMapper.toSessionActivityResponseList(recentSessions);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/records")
     public ResponseEntity<List<StepRecordResponse>> getRecords(
             @RequestHeader("Authorization") final String token,
             @RequestParam @NotNull @Valid final String sessionId) {
         log.info("Rest endpoint::getRecords invoked. " +
-                "Parameters: sessionId {}", sessionId);
+                "sessionId: {}", sessionId);
         List<StepRecordResponse> response = simulationService.getRecordsForSession(sessionId);
         return ResponseEntity.ok(response);
     }

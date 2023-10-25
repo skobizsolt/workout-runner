@@ -1,0 +1,26 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gymbuddy.workoutrunner.persistence.query.WorkoutRunnerQueryMapper">
+    <resultMap id="sessionsList" type="com.gymbuddy.workoutrunner.persistence.query.dto.RecentSessionsDto" autoMapping="true">
+    </resultMap>
+    <select id="getSessionActivity" resultMap="sessionsList">
+        SELECT
+            s.session_id,
+            w.workout_id,
+            w.title as workout_name,
+            w.difficulty,
+            w.category,
+            s.completed_at,
+            s.created_at as started_at,
+            s.status as completion_status,
+            SUM(ws.estimated_time) as timeToComplete,
+            SUM(sr.duration) as completedInSeconds
+        FROM session s, workout w, workout_step ws, step_record sr
+        WHERE s.workout_id = w.workout_id
+            AND w.workout_id = ws.workout_id
+            AND s.session_id = sr.session_id
+            AND w.user_id = #{userId}
+        GROUP BY s.session_id, w.workout_id, w.title, w.difficulty, w.category
+        ORDER BY COALESCE(s.completed_at, s.created_at) DESC
+    </select>
+</mapper>
