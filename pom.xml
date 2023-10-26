@@ -12,7 +12,7 @@
 	<artifactId>workout-runner</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gymbuddy-workout-runner</name>
-	<description>Demo project for Spring Boot</description>
+	<description>GymBuddy - Workout runner microservice</description>
 	<properties>
 		<java.version>17</java.version>
 		<mybatis.version>3.0.2</mybatis.version>
@@ -46,6 +46,11 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
@@ -76,6 +81,11 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${openapi.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.gymbuddy</groupId>
+			<artifactId>gymbuddy-auth</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -91,6 +101,20 @@
 						</exclude>
 					</excludes>
 				</configuration>
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -131,7 +155,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<outputFileName>training-api.yaml</outputFileName>
+					<outputFileName>workout-runner-api.yaml</outputFileName>
 					<outputDir>${project.build.directory}/docs/api</outputDir>
 				</configuration>
 			</plugin>

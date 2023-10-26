@@ -21,6 +21,11 @@ spring:
     format:
       date-time: iso
 
+mybatis:
+  mapper-locations: "query/queries.xml"
+  configuration:
+    map-underscore-to-camel-case: true
+
 firebase:
   audience: ${FIREBASE_PROJECT_ID:gymbuddy-b4e20}
   issuer: ${FIREBASE_ISSUER:https://securetoken.google.com/gymbuddy-b4e20}
