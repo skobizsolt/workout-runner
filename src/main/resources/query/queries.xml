@@ -10,8 +10,8 @@
             w.title as workout_name,
             w.difficulty,
             w.category,
-            s.completed_at,
             s.created_at as started_at,
+            s.completed_at,
             s.status as completion_status,
             SUM(ws.estimated_time) as timeToComplete,
             SUM(sr.duration) as completedInSeconds
