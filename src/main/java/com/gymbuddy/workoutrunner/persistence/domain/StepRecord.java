@@ -29,7 +29,7 @@ public class StepRecord {
     @NotNull
     String sessionId;
     @NotNull
-    String stepId;
+    Long stepId;
     @NotNull
     LocalDateTime completedAt;
     @NotNull
