@@ -13,14 +13,23 @@
             s.created_at as started_at,
             s.completed_at,
             s.status as completion_status,
-            SUM(ws.estimated_time) as timeToComplete,
-            SUM(sr.duration) as completedInSeconds
-        FROM session s, workout w, workout_step ws, step_record sr
-        WHERE s.workout_id = w.workout_id
-            AND w.workout_id = ws.workout_id
-            AND s.session_id = sr.session_id
-            AND w.user_id = #{userId}
-        GROUP BY s.session_id, w.workout_id, w.title, w.difficulty, w.category
+            COALESCE(ws.timeToComplete, 0) as timeToComplete,
+            COALESCE(sr.completedInSeconds, 0) as completedInSeconds
+        FROM session s
+            JOIN workout w ON s.workout_id = w.workout_id
+            LEFT JOIN (
+                SELECT workout_id, SUM(estimated_time) as timeToComplete
+                FROM workout_step
+                GROUP BY workout_id
+                ) ws
+                ON w.workout_id = ws.workout_id
+            LEFT JOIN (
+                SELECT session_id, SUM(duration) as completedInSeconds
+                FROM step_record
+                GROUP BY session_id
+                ) sr
+                ON s.session_id = sr.session_id
+            WHERE s.user_id = #{userId}
         ORDER BY COALESCE(s.completed_at, s.created_at) DESC
     </select>
 </mapper>
